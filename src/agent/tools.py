@@ -16,6 +16,6 @@ def lookup_faq(topic: str) -> ToolResult:
     topic simply is not covered - a legitimate 'I don't have that' answer."""
     key = topic.strip().lower()
     for name, answer in _FAQ.items():
-        if name in key:
+        if name in key or name.rstrip("s") in key:  # match "returns" on "return"
             return ok(answer, topic=name)
     return empty(f"No FAQ entry matches '{topic}'.")
