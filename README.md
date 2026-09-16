@@ -61,12 +61,22 @@ and the human who approves it are not the same process.
 
 ## Swapping the classifier
 
-`Agent(classifier=...)` takes anything with `classify(text) -> str`. The default
-`KeywordClassifier` keeps the demo and tests deterministic; a real deployment
-drops in an LLM-backed one without touching the graph.
+`Agent(classifier=...)` takes anything with `classify(text) -> str` (the Strategy
+pattern); `get_classifier(name)` is the factory that picks one. The default
+`KeywordClassifier` keeps the demo and tests deterministic; `OpenAIClassifier`
+uses an OpenAI model, with no change to the graph.
 
 ```bash
-python scripts/demo.py
+python scripts/demo.py              # keyword classifier, offline
+
+pip install -e ".[openai]"
+cp .env.example .env                # then put your OPENAI_API_KEY in .env
+```
+
+```python
+from agent import Agent, get_classifier
+agent = Agent(classifier=get_classifier("openai"))
+agent.submit("do you ship to Peru?", token="t1")
 ```
 
 ## Tests

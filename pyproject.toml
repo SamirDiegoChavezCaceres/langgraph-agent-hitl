@@ -16,6 +16,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# Use an OpenAI model for intent classification (reads OPENAI_API_KEY from .env).
+openai = ["openai>=1.0", "python-dotenv>=1.0"]
 dev = ["pytest>=7.4"]
 
 [tool.setuptools.packages.find]
