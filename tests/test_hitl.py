@@ -18,8 +18,8 @@ def test_reject_cancels_the_order():
 
 
 def test_resume_survives_a_new_instance(tmp_path):
-    # Persistence is the whole point of the token: a paused run resumes from a
-    # fresh Agent (a stand-in for a different process), not the one that started it.
+    # The token exists so a paused run can resume from a fresh Agent (standing in
+    # for a different process), not only the one that started it.
     db = str(tmp_path / "state.sqlite")
 
     starting = Agent.with_sqlite(db)
