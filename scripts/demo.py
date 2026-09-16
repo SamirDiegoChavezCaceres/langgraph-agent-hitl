@@ -16,11 +16,18 @@ from agent import Agent, KeywordClassifier, get_classifier
 
 
 def pick_classifier():
+    # Load a local .env first so a key configured there is detected.
+    try:
+        from dotenv import find_dotenv, load_dotenv
+
+        load_dotenv(find_dotenv(usecwd=True))
+    except Exception:
+        pass
     if os.getenv("OPENAI_API_KEY"):
         try:
             return get_classifier("openai"), "OpenAIClassifier"
         except Exception:
-            pass
+            pass  # openai not installed -> fall back so the demo still runs
     return KeywordClassifier(), "KeywordClassifier"
 
 
