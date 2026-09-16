@@ -1,28 +1,63 @@
-"""Run the agent through its three routes and the approval loop.
+"""A guided walkthrough of the agent: routing, approval, and resume-by-token.
 
     python scripts/demo.py
+
+Uses the OpenAI classifier when OPENAI_API_KEY is set, otherwise the offline
+keyword classifier, so it runs with or without a key.
 """
 
 from __future__ import annotations
 
-from agent import Agent
-from agent.classifier import get_classifier 
+import os
+import tempfile
+from pathlib import Path
+
+from agent import Agent, KeywordClassifier, get_classifier
+
+
+def pick_classifier():
+    if os.getenv("OPENAI_API_KEY"):
+        try:
+            return get_classifier("openai"), "OpenAIClassifier"
+        except Exception:
+            pass
+    return KeywordClassifier(), "KeywordClassifier"
+
+
+def rule(title: str) -> None:
+    print(f"\n=== {title} ===")
+
 
 def main() -> None:
-    agent = Agent(classifier=get_classifier("openai"))
+    classifier, name = pick_classifier()
+    agent = Agent(classifier=classifier)
+    print(f"classifier: {name}")
 
-    print("FAQ       ->", agent.submit("what is your return policy?", token="1")["response"])
-    print("Smalltalk ->", agent.submit("hey", token="2")["response"])
+    rule("1. The hub router sends each message to a sub-flow")
+    for message in ["what is your return policy?", "what is your warranty?", "hi there"]:
+        out = agent.submit(message, token=message)
+        print(f"  {message!r}")
+        print(f"     -> {out['response']}")
 
-    paused = agent.submit("I'd like to order 3 shirts", token="3")
-    print("\nOrder paused for approval:", paused)
+    rule("2. A sensitive action pauses for human approval")
+    paused = agent.submit("I'd like to order 3 shirts", token="order-A")
+    print(f"  submit -> status={paused['status']}")
+    print(f"           proposal={paused['proposal']}")
+    approved = agent.resume("order-A", "approve")
+    print(f"  human approves -> {approved['response']}")
 
-    approved = agent.resume("3", "approve")
-    print("After approval:", approved["response"])
+    rule("3. Rejecting cancels it")
+    agent.submit("order 10 posters", token="order-B")
+    print(f"  human rejects  -> {agent.resume('order-B', 'no')['response']}")
 
-    paused2 = agent.submit("order 10 posters", token="4")
-    print("\nOrder paused for approval:", paused2)
-    print("After rejection:", agent.resume("4", "no")["response"])
+    rule("4. The pause survives a restart (resume by token)")
+    db = str(Path(tempfile.mkdtemp()) / "state.sqlite")
+    first = Agent.with_sqlite(db, classifier=classifier)
+    paused = first.submit("order 5 books", token="order-C")
+    print(f"  process #1 submits -> status={paused['status']} (token 'order-C')")
+    second = Agent.with_sqlite(db, classifier=classifier)  # a different Agent / process
+    done = second.resume("order-C", "approve")
+    print(f"  process #2 resumes -> {done['response']}")
 
 
 if __name__ == "__main__":

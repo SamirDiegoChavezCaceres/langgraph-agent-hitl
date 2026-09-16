@@ -16,6 +16,12 @@ does anything real:
 It runs with no LLM and no API key: intent classification defaults to a keyword
 classifier you can swap for an LLM.
 
+## Demo
+
+![demo](assets/demo.gif)
+
+Generate it with [VHS](https://github.com/charmbracelet/vhs): `vhs demo.tape`.
+
 ## The graph
 
 ```
