@@ -1,5 +1,7 @@
 # langgraph-agent-hitl
 
+[![CI](https://github.com/SamirDiegoChavezCaceres/langgraph-agent-hitl/actions/workflows/ci.yml/badge.svg)](https://github.com/SamirDiegoChavezCaceres/langgraph-agent-hitl/actions/workflows/ci.yml) ![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 A small LangGraph agent that shows three patterns you need the moment an agent
 does anything real:
 

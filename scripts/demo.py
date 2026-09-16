@@ -6,10 +6,10 @@
 from __future__ import annotations
 
 from agent import Agent
-
+from agent.classifier import get_classifier 
 
 def main() -> None:
-    agent = Agent()
+    agent = Agent(classifier=get_classifier("openai"))
 
     print("FAQ       ->", agent.submit("what is your return policy?", token="1")["response"])
     print("Smalltalk ->", agent.submit("hey", token="2")["response"])
