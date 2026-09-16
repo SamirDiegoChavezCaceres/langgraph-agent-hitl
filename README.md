@@ -91,6 +91,14 @@ pytest
 Covers routing, the approval/rejection paths, the "don't improvise on an unknown
 FAQ" behaviour, and resume-from-a-fresh-instance via the SQLite checkpointer.
 
+## Limitations and next steps
+
+- The keyword classifier is a placeholder; real routing uses the OpenAI
+  classifier or a trained model.
+- Only one approval step is modeled; a real system has several, each with its
+  own policy.
+- Next: expire pending approvals after a timeout, and record who approved what.
+
 ## License
 
 MIT.
