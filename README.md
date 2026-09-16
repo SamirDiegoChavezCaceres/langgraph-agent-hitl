@@ -12,8 +12,7 @@ does anything real:
    agent can tell "found nothing" apart from "errored" and stop making things up.
 
 It runs with no LLM and no API key: intent classification defaults to a keyword
-classifier you can swap for an LLM. This is a from-scratch, neutral rewrite of a
-production pattern.
+classifier you can swap for an LLM.
 
 ## The graph
 
