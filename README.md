@@ -20,6 +20,14 @@ classifier you can swap for an LLM.
 
 ![demo](assets/demo.gif)
 
+The demo (`scripts/demo.py`) runs a toy order assistant and works with or without
+a key (it falls back to an offline keyword classifier when `OPENAI_API_KEY` is
+unset). It shows (1) the hub router sending three messages to their sub-flows,
+(2) *"I'd like to order 3 shirts"* pausing for human approval and continuing once
+approved, (3) a rejection cancelling the action, and (4) a pause resumed by token
+from a *different* process, proving the state survives a restart via the SQLite
+checkpointer.
+
 Generate it with [VHS](https://github.com/charmbracelet/vhs): `vhs demo.tape`.
 
 ## The graph
